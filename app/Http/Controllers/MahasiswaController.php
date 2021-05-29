@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use App\Models\SetupKelas;
+use App\Models\SetupPelajaran;
 
 class MahasiswaController extends Controller
 {
@@ -15,7 +17,17 @@ class MahasiswaController extends Controller
     public function index()
     {
         $mahasiswa = Mahasiswa::all();
-        return view('0009home', ['mahasiswa' => $mahasiswa]);
+        $mahasiswaselect = SetupKelas::select('bidang', 'nama_kelas')->get();
+        $mahasiswawhere = SetupKelas::where('bidang', '=', 'Fisika')->get();
+        $mahasiswajoin = SetupPelajaran::join('setup_kelas', 'nama_pelajaran', '=', 'bidang')->get();
+        $mahasiswajoinlike = SetupPelajaran::join('setup_kelas', 'nama_pelajaran', '=', 'bidang')
+            ->where('bidang', 'like', 'Fisika')->get();
+        return view('0009home', [
+            'mahasiswaselect' => $mahasiswaselect,
+            'mahasiswawhere' => $mahasiswawhere,
+            'mahasiswajoin' => $mahasiswajoin,
+            'mahasiswajoinlike' => $mahasiswajoinlike,
+        ]);
     }
 
     /**
